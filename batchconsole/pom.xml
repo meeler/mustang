@@ -5,11 +5,11 @@
     <parent>
         <artifactId>mustang</artifactId>
         <groupId>com.dimogo.open.mustang</groupId>
-        <version>1.6</version>
+        <version>1.7</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <packaging>war</packaging>
-    <version>1.6</version>
+    <version>1.7</version>
 
     <artifactId>batchconsole</artifactId>
 
@@ -17,12 +17,12 @@
         <dependency>
             <groupId>com.dimogo.open.mustang</groupId>
             <artifactId>myjobs</artifactId>
-            <version>1.6</version>
+            <version>1.7</version>
         </dependency>
         <dependency>
             <groupId>com.dimogo.open.mustang</groupId>
             <artifactId>hello-jar</artifactId>
-            <version>1.6</version>
+            <version>1.7</version>
         </dependency>
     </dependencies>
 

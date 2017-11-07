@@ -6,6 +6,7 @@ mustang - 批处理任务集群扩展
 - [源码结构说明](#源码结构说明)
 - [功能介绍](#功能介绍)
 - [使用方法](#使用方法)
+- [错误收集](#错误收集)
 - [版本历史](#版本历史)
 - [配置与文件](#配置与文件)
 
@@ -82,9 +83,30 @@ mustang是一个后端批处理任务调度集成项目，主要目的是提供�
 
 	引入myjobs时需要配置dimogo的仓库，仓库地址为：[http://mvn.dimogo.com:10010/repository/dimogo/](http://mvn.dimogo.com:10010/#browse/browse/components:dimogo)，[点击这里](http://mvn.dimogo.com:10010/#browse/browse/components:dimogo)寻找你需要的依懒包！
 
+<span id="5">错误收集</span>
+--
+- 运行时找不到javax.batch包下的类
+
+	解决方法：增加依懒javax.batch:javax.batch-api:1.0
+	
+- 日志中大量ZooKeeper与Sigar的错误
+
+	解决办法：按前文描述为你的运行环境下载sigar 1.6.5的动态库，并放入相应的目录中。
+	
+	这个问题本不应该影响运行，后续改进！
+
+
 <span id="5">版本历史</span>
 ---
-- 1.6 (当前版本)
+- 1.7 (当前版本)
+
+	捕获缺少sigar动态链接库的异常，防止输出大量日志。
+	
+	增加log4j.properties，限制日志文件数量与大小。
+	
+	控制myjobs日志输出。
+
+- 1.6
 
 	完善用户、权限设置。
 	用户操作权限限制。
@@ -260,6 +282,11 @@ executor.monitor.interval=300000
             <groupId>org.springframework.batch</groupId>
             <artifactId>spring-batch-admin-domain</artifactId>
             <version>${spring.batch.admin.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.batch</groupId>
+            <artifactId>javax.batch-api</artifactId>
+            <version>1.0</version>
         </dependency>
    </dependencies>
 </project>

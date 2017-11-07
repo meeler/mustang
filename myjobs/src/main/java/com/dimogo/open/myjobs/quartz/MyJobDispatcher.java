@@ -10,6 +10,7 @@ import org.I0Itec.zkclient.exception.ZkNodeExistsException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.apache.zookeeper.KeeperException;
 
 import java.util.List;
@@ -22,6 +23,7 @@ import java.util.concurrent.BlockingQueue;
  */
 public class MyJobDispatcher implements Runnable {
 
+	private static final Logger logger = Logger.getLogger(MyJobDispatcher.class);
 	private BlockingQueue<List<String>> queue;
 
 	public MyJobDispatcher(BlockingQueue<List<String>> queue) {
@@ -63,7 +65,9 @@ public class MyJobDispatcher implements Runnable {
 							try {
 								zkClient.deleteRecursive(notificationPath);
 							} catch (Throwable e) {
-								e.printStackTrace();
+								if (logger.isDebugEnabled()) {
+									logger.debug(e);
+								}
 							}
 							continue;
 						}
@@ -80,11 +84,15 @@ public class MyJobDispatcher implements Runnable {
 						try {
 							zkClient.deleteRecursive(notificationPath);
 						} catch (Throwable e) {
-							e.printStackTrace();
+							if (logger.isDebugEnabled()) {
+								logger.debug(e);
+							}
 						}
 					}
 				} catch (InterruptedException e) {
-					e.printStackTrace();
+					if (logger.isDebugEnabled()) {
+						logger.debug(e);
+					}
 					break;
 				}
 			}
@@ -98,7 +106,9 @@ public class MyJobDispatcher implements Runnable {
 		try {
 			return nonLock(zkClient, notificationType, notification, paras);
 		} catch (Throwable e) {
-			e.printStackTrace();
+			if (logger.isDebugEnabled()) {
+				logger.debug(e);
+			}
 			return false;
 		} finally {
 			zkClient.deleteRecursive(lockPath);

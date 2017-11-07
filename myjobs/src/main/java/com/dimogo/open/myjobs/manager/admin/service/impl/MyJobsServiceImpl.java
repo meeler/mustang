@@ -14,6 +14,7 @@ import org.I0Itec.zkclient.exception.ZkNodeExistsException;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.apache.zookeeper.CreateMode;
 import org.springframework.stereotype.Service;
 
@@ -24,6 +25,8 @@ import java.util.*;
  */
 @Service("clusteredJobService")
 public class MyJobsServiceImpl implements MyJobsService {
+
+	private static final Logger logger = Logger.getLogger(MyJobsServiceImpl.class);
 
 	private static ExecutionHistoryComparator executionHistoryComparator = new ExecutionHistoryComparator();
 
@@ -61,7 +64,9 @@ public class MyJobsServiceImpl implements MyJobsService {
 			try {
 				historyCount = zkClient.countChildren(ZKUtils.buildJobHistoriesPath(job));
 			} catch (Throwable e) {
-				e.printStackTrace();
+				if (logger.isDebugEnabled()) {
+					logger.debug(e);
+				}
 			}
 
 			ClusteredJobInfo jobInfo = new ClusteredJobInfo();
@@ -174,7 +179,9 @@ public class MyJobsServiceImpl implements MyJobsService {
 		try {
 			historyCount = zkClient.countChildren(ZKUtils.buildJobHistoriesPath(jobName));
 		} catch (Throwable e) {
-			e.printStackTrace();
+			if (logger.isDebugEnabled()) {
+				logger.debug(e);
+			}
 		}
 
 		ClusteredJobInfo jobInfo = new ClusteredJobInfo();
@@ -298,7 +305,9 @@ public class MyJobsServiceImpl implements MyJobsService {
 			}
 			JobUtils.sendJobNotification(jobName, NotificationType.StopJob.name(), message, jobExecutors);
 		} catch (Exception e) {
-			e.printStackTrace();
+			if (logger.isDebugEnabled()) {
+				logger.debug(e);
+			}
 		}
 	}
 
@@ -311,7 +320,9 @@ public class MyJobsServiceImpl implements MyJobsService {
 			JobUtils.sendJobNotification(jobName, NotificationType.PauseTrigger.name(), message, null);
 			zkClient.create(ZKUtils.buildJobPauseTrigger(jobName), null, CreateMode.PERSISTENT);
 		} catch (Exception e) {
-			e.printStackTrace();
+			if (logger.isDebugEnabled()) {
+				logger.debug(e);
+			}
 		}
 	}
 
@@ -324,7 +335,9 @@ public class MyJobsServiceImpl implements MyJobsService {
 			JobUtils.sendJobNotification(jobName, NotificationType.ResumeTrigger.name(), message, null);
 			zkClient.deleteRecursive(ZKUtils.buildJobPauseTrigger(jobName));
 		} catch (Exception e) {
-			e.printStackTrace();
+			if (logger.isDebugEnabled()) {
+				logger.debug(e);
+			}
 		}
 	}
 
@@ -336,7 +349,9 @@ public class MyJobsServiceImpl implements MyJobsService {
 			if (e instanceof ZkNoNodeException) {
 				return new ArrayList<JobHistoryDTO>(0);
 			}
-			e.printStackTrace();
+			if (logger.isDebugEnabled()) {
+				logger.debug(e);
+			}
 			throw new RuntimeException("get history ndoes error", e);
 		}
 		if (CollectionUtils.isEmpty(histories)) {
@@ -365,7 +380,9 @@ public class MyJobsServiceImpl implements MyJobsService {
 			if (e instanceof ZkNoNodeException) {
 				return 0;
 			}
-			e.printStackTrace();
+			if (logger.isDebugEnabled()) {
+				logger.debug(e);
+			}
 			throw new RuntimeException("count history error", e);
 		}
 	}
@@ -374,7 +391,9 @@ public class MyJobsServiceImpl implements MyJobsService {
 		try {
 			zkClient.deleteRecursive(ZKUtils.buildJobHistoriesPath(jobName));
 		} catch (Throwable e) {
-			e.printStackTrace();
+			if (logger.isDebugEnabled()) {
+				logger.debug(e);
+			}
 		}
 	}
 
@@ -390,7 +409,9 @@ public class MyJobsServiceImpl implements MyJobsService {
 			zkClient.writeData(ZKUtils.buildUserPath(user.getUserName()), user);
 			return true;
 		} catch (Throwable e) {
-			e.printStackTrace();
+			if (logger.isDebugEnabled()) {
+				logger.debug(e);
+			}
 			return false;
 		}
 	}

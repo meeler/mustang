@@ -5,6 +5,7 @@ import com.dimogo.open.myjobs.dto.JobHistoryDTO;
 import com.dimogo.open.myjobs.utils.ID;
 import com.dimogo.open.myjobs.utils.ZKUtils;
 import org.I0Itec.zkclient.ZkClient;
+import org.apache.log4j.Logger;
 import org.apache.zookeeper.CreateMode;
 import org.springframework.batch.core.JobExecution;
 import org.springframework.batch.core.JobExecutionListener;
@@ -17,6 +18,7 @@ import java.util.UUID;
  * Created by Ethan Xiao on 2017/4/4.
  */
 public class JobStatusListener implements JobExecutionListener {
+	private static final Logger logger = Logger.getLogger(JobStatusListener.class);
 	private static final String EXECUTION_ID = "execution.id";
 	private Map<UUID, ZkClient> zkClients = new LinkedHashMap<UUID, ZkClient>();
 
@@ -64,7 +66,9 @@ public class JobStatusListener implements JobExecutionListener {
 				ZKUtils.create(zkClient, ZKUtils.buildJobHistoryPath(jobName, historyId), jobHistoryDTO, CreateMode.PERSISTENT);
 				zkClient.close();
 			} catch (Throwable e) {
-				e.printStackTrace();
+				if (logger.isDebugEnabled()) {
+					logger.debug(e);
+				}
 			} finally {
 				zkClients.remove(executionId);
 			}

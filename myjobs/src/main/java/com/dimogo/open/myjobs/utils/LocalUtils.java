@@ -1,6 +1,7 @@
 package com.dimogo.open.myjobs.utils;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.log4j.Logger;
 
 import java.io.InputStream;
 import java.net.InetAddress;
@@ -12,6 +13,7 @@ import java.util.regex.Pattern;
  * Created by Ethan Xiao on 2017/4/5.
  */
 public class LocalUtils {
+	private static final Logger logger = Logger.getLogger(LocalUtils.class);
 	public static final String ip = getLocalIp();
 
 	/**
@@ -45,7 +47,9 @@ public class LocalUtils {
 				}
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			if (logger.isDebugEnabled()) {
+				logger.debug(e);
+			}
 		}
 		return "127.0.0.1";
 	}

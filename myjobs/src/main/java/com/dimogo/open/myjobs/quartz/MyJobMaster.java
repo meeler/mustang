@@ -4,8 +4,8 @@ import com.dimogo.open.myjobs.utils.ZKUtils;
 import org.I0Itec.zkclient.ZkClient;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.log4j.Logger;
 import org.quartz.*;
-import org.quartz.impl.StdSchedulerFactory;
 import org.quartz.impl.matchers.GroupMatcher;
 
 import java.text.ParseException;
@@ -18,6 +18,8 @@ import java.util.Set;
  * Created by Ethan Xiao on 2017/4/13.
  */
 public class MyJobMaster implements Runnable {
+
+	private static final Logger logger = Logger.getLogger(MyJobMaster.class);
 
 	private static class MyJobMasterHolder {
 		private static MyJobMaster instance = new MyJobMaster();
@@ -40,10 +42,14 @@ public class MyJobMaster implements Runnable {
 				}
 				schedule(lock.getZkClient());
 			} catch (InterruptedException e) {
-				e.printStackTrace();
+				if (logger.isDebugEnabled()) {
+					logger.debug(e);
+				}
 				break;
 			} catch (SchedulerException e) {
-				e.printStackTrace();
+				if (logger.isDebugEnabled()) {
+					logger.debug(e);
+				}
 				continue;
 			} finally {
 				lock.unlock();
@@ -52,7 +58,7 @@ public class MyJobMaster implements Runnable {
 	}
 
 	private void schedule(ZkClient zkClient) throws SchedulerException {
-		System.out.println("master startup");
+		logger.info("master startup");
 		Scheduler scheduler = SchedulerManager.getInstance().start();
 		try {
 			scheduler.start();
@@ -67,9 +73,13 @@ public class MyJobMaster implements Runnable {
 					scheduledJobs.add(jobKey.getName());
 					if (CollectionUtils.isEmpty(jobNames) || !jobNames.contains(jobKey.getName())) {
 						if (unscheduledJob(scheduler, jobKey.getName())) {
-							System.out.println("removed job " + jobKey.getName());
+							if (logger.isDebugEnabled()) {
+								logger.debug("removed job " + jobKey.getName());
+							}
 						} else {
-							System.out.println("remove job " + jobKey.getName() + " failed");
+							if (logger.isDebugEnabled()) {
+								logger.debug("remove job " + jobKey.getName() + " failed");
+							}
 						}
 					}
 				}
@@ -88,9 +98,13 @@ public class MyJobMaster implements Runnable {
 								}
 								//no cron expression
 								if (unscheduledJob(scheduler, jobName)) {
-									System.out.println("unscheduled job " + jobName + ", cron expression is blank");
+									if (logger.isDebugEnabled()) {
+										logger.debug("unscheduled job " + jobName + ", cron expression is blank");
+									}
 								} else {
-									System.out.println("unscheduled job " + jobName + " failed, cron expression is blank");
+									if (logger.isDebugEnabled()) {
+										logger.debug("unscheduled job " + jobName + " failed, cron expression is blank");
+									}
 								}
 								continue;
 							}
@@ -98,9 +112,13 @@ public class MyJobMaster implements Runnable {
 							if (!scheduler.checkExists(jobKey)) {
 								//new cron job
 								if (scheduleJob(scheduler, jobName, cronExpression) != null) {
-									System.out.println("schedule job " + jobName);
+									if (logger.isDebugEnabled()) {
+										logger.debug("schedule job " + jobName);
+									}
 								} else {
-									System.out.println("schedule job " + jobName + " failed");
+									if (logger.isDebugEnabled()) {
+										logger.debug("schedule job " + jobName + " failed");
+									}
 								}
 								continue;
 							}
@@ -108,16 +126,24 @@ public class MyJobMaster implements Runnable {
 							if (!oldTrigger.getCronExpression().equals(cronExpression)) {
 								//update cron of job
 								if (rescheduleJob(scheduler, jobName, cronExpression) != null) {
-									System.out.println("reschedule job " + jobName);
+									if (logger.isDebugEnabled()) {
+										logger.debug("reschedule job " + jobName);
+									}
 								} else {
-									System.out.println("reschedule job " + jobName + " failed");
+									if (logger.isDebugEnabled()) {
+										logger.debug("reschedule job " + jobName + " failed");
+									}
 								}
 								continue;
 							}
 						} catch (ParseException e) {
-							e.printStackTrace();
+							if (logger.isDebugEnabled()) {
+								logger.debug(e);
+							}
 						} catch (SchedulerException e) {
-							e.printStackTrace();
+							if (logger.isDebugEnabled()) {
+								logger.debug(e);
+							}
 						}
 					}
 				}

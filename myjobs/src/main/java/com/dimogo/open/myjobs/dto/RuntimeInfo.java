@@ -1,6 +1,7 @@
 package com.dimogo.open.myjobs.dto;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.log4j.Logger;
 import org.hyperic.sigar.*;
 
 import java.net.InetAddress;
@@ -11,6 +12,7 @@ import java.util.*;
  * Created by Ethan Xiao on 2017/4/27.
  */
 public class RuntimeInfo {
+	private static final Logger logger = Logger.getLogger(RuntimeInfo.class);
 	private Date time;
 	private String javaLibraryPath = System.getProperty("java.library.path");
 
@@ -305,7 +307,9 @@ public class RuntimeInfo {
 			ip = addr.getHostAddress();
 			hostName = addr.getHostName();
 		} catch (UnknownHostException e) {
-			e.printStackTrace();
+			if (logger.isDebugEnabled()) {
+				logger.debug(e);
+			}
 		}
 
 		Runtime r = Runtime.getRuntime();
@@ -329,7 +333,9 @@ public class RuntimeInfo {
 			usedMemory = mem.getUsed();
 			freeMemory = mem.getFree();
 		} catch (Throwable e) {
-			e.printStackTrace();
+			if (logger.isDebugEnabled()) {
+				logger.debug(e);
+			}
 		}
 
 		try {
@@ -338,7 +344,9 @@ public class RuntimeInfo {
 			usedSwap = swap.getUsed();
 			freeSwap = swap.getFree();
 		} catch (Throwable e) {
-			e.printStackTrace();
+			if (logger.isDebugEnabled()) {
+				logger.debug(e);
+			}
 		}
 
 		try {
@@ -349,7 +357,9 @@ public class RuntimeInfo {
 				cpus.add(new CpuRuntimeInfo(infos[i], cpuList[i]));
 			}
 		} catch (Throwable e) {
-			e.printStackTrace();
+			if (logger.isDebugEnabled()) {
+				logger.debug(e);
+			}
 		}
 
 		try {
@@ -364,7 +374,9 @@ public class RuntimeInfo {
 			osVendorVersion = OS.getVendorVersion();
 			osVersion = OS.getVersion();
 		} catch (Throwable e) {
-			e.printStackTrace();
+			if (logger.isDebugEnabled()) {
+				logger.debug(e);
+			}
 		}
 
 		try {
@@ -374,7 +386,9 @@ public class RuntimeInfo {
 				disks.add(new DiskRuntimeInfo(fs, sigar.getFileSystemUsage(fs.getDirName())));
 			}
 		} catch (Throwable e) {
-			e.printStackTrace();
+			if (logger.isDebugEnabled()) {
+				logger.debug(e);
+			}
 		}
 
 		try {
@@ -392,7 +406,9 @@ public class RuntimeInfo {
 				ethernets.add(new EthernetRuntimeInfo(ifconfig));
 			}
 		} catch (Throwable e) {
-			e.printStackTrace();
+			if (logger.isDebugEnabled()) {
+				logger.debug(e);
+			}
 		}
 	}
 }

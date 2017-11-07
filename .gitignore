@@ -4,3 +4,4 @@ batchconsole/target/*
 **/*.iml
 **/*.idea/*
 **/pom.xml.versionsBackup
+**/*.log

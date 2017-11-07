@@ -1,6 +1,7 @@
 package com.dimogo.open.myjobs.notification;
 
 import com.dimogo.open.myjobs.types.NotificationParaType;
+import org.apache.log4j.Logger;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.JobParameter;
 import org.springframework.batch.core.JobParameters;
@@ -21,6 +22,7 @@ import java.util.Map;
  */
 public class RunJobProcessor implements NotificationProcessor {
 
+	private static final Logger logger = Logger.getLogger(NotificationProcessor.class);
 	private JobLocator jobLocator;
 	private JobLauncher jobLauncher;
 	private JobRepository jobRepository;
@@ -33,15 +35,25 @@ public class RunJobProcessor implements NotificationProcessor {
 			Job job = jobLocator.getJob(jobName);
 			jobLauncher.run(job, jobParameters);
 		} catch (NoSuchJobException e) {
-			e.printStackTrace();
+			if (logger.isDebugEnabled()) {
+				logger.debug(e);
+			}
 		} catch (JobInstanceAlreadyCompleteException e) {
-			e.printStackTrace();
+			if (logger.isDebugEnabled()) {
+				logger.debug(e);
+			}
 		} catch (JobExecutionAlreadyRunningException e) {
-			e.printStackTrace();
+			if (logger.isDebugEnabled()) {
+				logger.debug(e);
+			}
 		} catch (JobParametersInvalidException e) {
-			e.printStackTrace();
+			if (logger.isDebugEnabled()) {
+				logger.debug(e);
+			}
 		} catch (JobRestartException e) {
-			e.printStackTrace();
+			if (logger.isDebugEnabled()) {
+				logger.debug(e);
+			}
 		}
 	}
 
