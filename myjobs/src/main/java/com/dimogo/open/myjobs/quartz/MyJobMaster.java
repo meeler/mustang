@@ -51,6 +51,11 @@ public class MyJobMaster implements Runnable {
 					logger.debug(e);
 				}
 				continue;
+			} catch (Throwable e) {
+				if (logger.isDebugEnabled()) {
+					logger.debug("MyJobs master error", e);
+				}
+				continue;
 			} finally {
 				lock.unlock();
 			}

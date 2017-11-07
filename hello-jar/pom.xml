@@ -5,12 +5,12 @@
     <parent>
         <artifactId>mustang</artifactId>
         <groupId>com.dimogo.open.mustang</groupId>
-        <version>1.7</version>
+        <version>1.7.1</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>hello-jar</artifactId>
     <packaging>jar</packaging>
-    <version>1.7</version>
+    <version>1.7.1</version>
 
 </project>
